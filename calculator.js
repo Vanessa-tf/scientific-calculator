@@ -4,42 +4,81 @@ var previousInput = '';
 function updateDisplay() {
     var display = document.getElementById('display');
     if (display) {
-        display.textContent = currentInput;
+        if (operator && previousInput) {
+            display.textContent = "".concat(previousInput, " ").concat(getOperatorSymbol(operator), " ").concat(currentInput);
+        }
+        else {
+            display.textContent = currentInput;
+        }
+    }
+}
+function getOperatorSymbol(op) {
+    switch (op) {
+        case '+': return '+';
+        case '-': return '−';
+        case '*': return '×';
+        case '/': return '÷';
+        default: return op;
     }
 }
 function appendNumber(num) {
-    if (currentInput === '0') {
+    if (currentInput === '0' || currentInput === 'Error') {
         currentInput = num;
     }
     else {
-        currentInput = currentInput + num;
+        currentInput += num;
     }
     updateDisplay();
 }
 function appendOperator(op) {
-    if (previousInput !== '') {
+    if (operator && previousInput) {
         calculate();
+        previousInput = currentInput;
+        currentInput = '0';
     }
     operator = op;
     previousInput = currentInput;
     currentInput = '0';
+    updateDisplay();
 }
 function calculate() {
-    var result = 0;
+    if (!previousInput || !operator) {
+        return;
+    }
     var prev = parseFloat(previousInput);
     var current = parseFloat(currentInput);
-    if (operator === '+') {
-        result = prev + current;
+    if (isNaN(prev) || isNaN(current)) {
+        currentInput = 'Error';
+        operator = '';
+        previousInput = '';
+        updateDisplay();
+        return;
     }
-    else if (operator === '-') {
-        result = prev - current;
+    var result;
+    switch (operator) {
+        case '+':
+            result = prev + current;
+            break;
+        case '-':
+            result = prev - current;
+            break;
+        case '*':
+            result = prev * current;
+            break;
+        case '/':
+            if (current === 0) {
+                currentInput = 'Error';
+                operator = '';
+                previousInput = '';
+                updateDisplay();
+                return;
+            }
+            result = prev / current;
+            break;
+        default:
+            return;
     }
-    else if (operator === '*') {
-        result = prev * current;
-    }
-    else if (operator === '/') {
-        result = prev / current;
-    }
+    result = Math.round(result * 100000000) / 100000000;
     currentInput = result.toString();
     operator = '';
     previousInput = '';
@@ -52,7 +91,7 @@ function clearDisplay() {
     updateDisplay();
 }
 function deleteLast() {
-    if (currentInput.length > 1) {
+    if (currentInput.length > 1 && currentInput !== 'Error') {
         currentInput = currentInput.slice(0, -1);
     }
     else {
@@ -60,39 +99,68 @@ function deleteLast() {
     }
     updateDisplay();
 }
+function appendParenthesis(parenthesis) {
+    if (currentInput === '0' || currentInput === 'Error') {
+        currentInput = parenthesis;
+    }
+    else {
+        currentInput += parenthesis;
+    }
+    updateDisplay();
+}
 function calculateSin() {
     var num = parseFloat(currentInput);
+    if (isNaN(num))
+        return;
     var radians = num * (Math.PI / 180);
-    currentInput = Math.sin(radians).toString();
+    var result = Math.sin(radians);
+    currentInput = Math.round(result * 100000000) / 100000000 + '';
     updateDisplay();
 }
 function calculateCos() {
     var num = parseFloat(currentInput);
+    if (isNaN(num))
+        return;
     var radians = num * (Math.PI / 180);
-    currentInput = Math.cos(radians).toString();
+    var result = Math.cos(radians);
+    currentInput = Math.round(result * 100000000) / 100000000 + '';
     updateDisplay();
 }
 function calculateTan() {
     var num = parseFloat(currentInput);
+    if (isNaN(num))
+        return;
     var radians = num * (Math.PI / 180);
-    currentInput = Math.tan(radians).toString();
+    var result = Math.tan(radians);
+    currentInput = Math.round(result * 100000000) / 100000000 + '';
     updateDisplay();
 }
 function calculateSquare() {
     var num = parseFloat(currentInput);
-    currentInput = (num * num).toString();
+    if (isNaN(num))
+        return;
+    currentInput = (num * num) + '';
     updateDisplay();
 }
 function calculateSqrt() {
     var num = parseFloat(currentInput);
-    currentInput = Math.sqrt(num).toString();
+    if (isNaN(num))
+        return;
+    if (num < 0) {
+        currentInput = 'Error';
+    }
+    else {
+        currentInput = Math.sqrt(num) + '';
+    }
     updateDisplay();
 }
+
 window.appendNumber = appendNumber;
 window.appendOperator = appendOperator;
 window.calculate = calculate;
 window.clearDisplay = clearDisplay;
 window.deleteLast = deleteLast;
+window.appendParenthesis = appendParenthesis;
 window.calculateSin = calculateSin;
 window.calculateCos = calculateCos;
 window.calculateTan = calculateTan;
