@@ -88,3 +88,13 @@ function calculateSqrt() {
     currentInput = Math.sqrt(num).toString();
     updateDisplay();
 }
+window.appendNumber = appendNumber;
+window.appendOperator = appendOperator;
+window.calculate = calculate;
+window.clearDisplay = clearDisplay;
+window.deleteLast = deleteLast;
+window.calculateSin = calculateSin;
+window.calculateCos = calculateCos;
+window.calculateTan = calculateTan;
+window.calculateSquare = calculateSquare;
+window.calculateSqrt = calculateSqrt;
