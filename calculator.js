@@ -98,3 +98,4 @@ window.calculateCos = calculateCos;
 window.calculateTan = calculateTan;
 window.calculateSquare = calculateSquare;
 window.calculateSqrt = calculateSqrt;
+
