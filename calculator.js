@@ -7,20 +7,10 @@ function updateDisplay() {
     if (display) {
         // Show full expression if we have an operator
         if (operator !== '' && previousInput !== '') {
-            display.textContent = previousInput + ' ' + getOperatorSymbol(operator) + ' ' + currentInput;
+            display.textContent = previousInput + ' ' + operator + ' ' + currentInput;
         } else {
             display.textContent = currentInput;
         }
-    }
-}
-
-function getOperatorSymbol(op) {
-    switch(op) {
-        case '+': return '+';
-        case '-': return '−';
-        case '*': return '×';
-        case '/': return '÷';
-        default: return op;
     }
 }
 
@@ -80,6 +70,15 @@ function deleteLast() {
     updateDisplay();
 }
 
+function appendParenthesis(parenthesis) {
+    if (currentInput === '0') {
+        currentInput = parenthesis;
+    } else {
+        currentInput = currentInput + parenthesis;
+    }
+    updateDisplay();
+}
+
 function calculateSin() {
     var num = parseFloat(currentInput);
     var radians = num * (Math.PI / 180);
@@ -113,15 +112,7 @@ function calculateSqrt() {
     updateDisplay();
 }
 
-function appendParenthesis(parenthesis) {
-    if (currentInput === '0') {
-        currentInput = parenthesis;
-    } else {
-        currentInput = currentInput + parenthesis;
-    }
-    updateDisplay();
-}
-
+// Make functions available globally
 window.appendNumber = appendNumber;
 window.appendOperator = appendOperator;
 window.calculate = calculate;
